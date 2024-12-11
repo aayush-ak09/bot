@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Interface</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f9;
+        }
+        /*hide scroll bare here for this xhat box*/
+        .chatbot-container {
+            width: 360px;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            max-height: 500px;
+            /* overflow: hidden; */
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            display: none;
+            z-index: 1000;
+        }
+        .chatbot-body::-webkit-scrollbar {
+            display: none;
+        }
+        .chatbot-header {
+            background: #0078d4;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .chatbot-body {
+            padding: 15px;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        .chatbot-footer {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid #ddd;
+        }
+
+        .chatbot-footer input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            outline: none;
+        }
+
+        .chatbot-footer button {
+            margin-left: 10px;
+            padding: 10px 20px;
+            background-color: #0078d4;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .chatbot-footer button:hover {
+            background-color: #005a9e;
+        }
+
+        .chat-message {
+            margin-bottom: 10px;
+            display: flex;
+        }
+
+        .chat-message.user {
+            justify-content: flex-end;
+        }
+
+        .chat-message .message {
+            max-width: 70%;
+            padding: 10px;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+
+        .chat-message.user .message {
+            background-color: #d1e7ff;
+            color: #333;
+        }
+
+        .chat-message.bot .message {
+            background-color: #f1f1f1;
+            color: #333;
+        }
+
+        .chatbot-icon {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: #0078d4;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .chatbot-icon img {
+            width: 30px;
+            height: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="chatbot-container" id="chat-container">
+        <div class="chatbot-header">Chatbot Assistant</div>
+        <div class="chatbot-body" id="chat-body">
+        </div>
+        <div class="chatbot-footer">
+            <input type="text" id="user-input" placeholder="Type a message...">
+            <button id="send-button">Send</button>
+        </div>
+    </div>
+
+    <div class="chatbot-icon" id="chat-icon">
+        <img src="https://img.icons8.com/ios-filled/50/ffffff/chat.png" alt="Chat Icon">
+    </div>
+
+    <script>
+        const chatContainer = document.getElementById('chat-container');
+        const chatIcon = document.getElementById('chat-icon');
+        const chatBody = document.getElementById('chat-body');
+        const userInput = document.getElementById('user-input');
+        const sendButton = document.getElementById('send-button');
+
+        chatIcon.addEventListener('click', () => {
+            if (chatContainer.style.display === 'none' || chatContainer.style.display === '') {
+                chatContainer.style.display = 'flex';
+            } else {
+                chatContainer.style.display = 'none';
+            }
+        });
+
+        function addMessage(content, isUser = true) {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('chat-message', isUser ? 'user' : 'bot');
+
+            const messageBubble = document.createElement('div');
+            messageBubble.classList.add('message');
+            messageBubble.textContent = content;
+
+            messageElement.appendChild(messageBubble);
+            chatBody.appendChild(messageElement);
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+
+        sendButton.addEventListener('click', () => {
+            const message = userInput.value.trim();
+            if (message) {
+                addMessage(message, true);
+                userInput.value = '';
+                setTimeout(() => {
+                    addMessage('This is a bot response.', false);
+                }, 500);
+            }
+        });
+
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendButton.click();
+            }
+        });
+    </script>
+</body>
+</html>
